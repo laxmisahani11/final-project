@@ -45,7 +45,7 @@ const Bookings = () => {
 
             data
               .filter((property) =>
-                bookings.map((booking) => booking.id).includes(property.id)
+                bookings?.map((booking) => booking.id).includes(property.id)
               )
 
               .filter(

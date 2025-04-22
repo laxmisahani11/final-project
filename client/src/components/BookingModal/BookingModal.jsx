@@ -17,6 +17,7 @@ const BookingModal = ({ opened, setOpened, email, propertyId }) => {
     toast.success("You have booked your visit", {
       position: "bottom-right",
     });
+    navigate("/bookings");
     setUserDetails((prev) => ({
       ...prev,
       bookings: [

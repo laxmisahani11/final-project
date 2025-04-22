@@ -29,27 +29,25 @@ const createUser = asynceHandler(async (req, res) => {
 // bookvisit for residency
 
 const bookVisit = asynceHandler(async (req, res) => {
-    const {email,date} = req.body;
+    const {email, date} = req.body;
     const {id} = req.params;
     try {
-        const alreadyBooked = await prisma.user.findUnique({
-            where:{email},
-            select:{bookedVisits :true}
-        })
-        if(alreadyBooked.bookedVisits.some((visit)=>visit.id===id)){
-            res.status(400).json({message:"Already booked"})
-        }
-        else{
-            await prisma.user.update({
-                where:{email},
-                data:{
-                    bookedVisits:{ push:{ id, date}},
-                },
-            });
-            res.status(200).send({message:"Booked successfully"})
-        }
+        await prisma.user.upsert({
+            where: { email },
+            update: {
+                bookedVisits: {
+                    push: { id, date }
+                }
+            },
+            create: {
+                email,
+                bookedVisits: [{ id, date }],
+                favResidenciesID: []
+            }
+        });
+        res.status(200).send({message: "Booked successfully"});
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
     }
 });
 
